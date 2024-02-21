@@ -1,0 +1,19 @@
+{
+  "name": "tutornestbackend",
+  "version": "1.0.0",
+  "description": "Web service for an edtech solution",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AccontableDevelopers/TutorNestBackend.git"
+  },
+  "author": "Accountability group 2024",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AccontableDevelopers/TutorNestBackend/issues"
+  },
+  "homepage": "https://github.com/AccontableDevelopers/TutorNestBackend#readme"
+}
