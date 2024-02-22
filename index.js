@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const ejs = require('ejs');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const connectDB = require('./config/db');
 const date = new Date();
 const PORT = process.env['PORT'] || 8000;
 
@@ -32,6 +33,10 @@ app.use(fileUpload({
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+
+
+// Database connection
+connectDB();
 
 //App Listen
 app.listen(PORT, log(`Server run on PORT ${PORT}, Date: ${date}`));
