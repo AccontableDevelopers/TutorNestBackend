@@ -7,11 +7,12 @@ const app = express();
 
 app.use(bodyParser.json())
 
-const createNewPassword = async (payload) => {
+
+const createNewPassword = async () => {
     const { newPassword } = payload;
 
     try {
-        const foundTutor = await User.findById({ _id: payload._id })
+        const foundTutor = await Users.findById({ _id: payload._id })
 
         if (!foundTutor) return "No user with provided id";
 
@@ -22,7 +23,7 @@ const createNewPassword = async (payload) => {
 
         await foundTutor.save();
 
-        return "Password changed successfully!"
+        console.log("Password changed successfully!");
 
     } catch (error) {
         console.error(error);
