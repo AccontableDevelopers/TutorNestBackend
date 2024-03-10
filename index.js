@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const ejs = require('ejs');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const session = require('express-session');
+const mongoStore = require('connect-mongo');
 const connectDB = require('./config/db');
 const date = new Date();
 const PORT = process.env['PORT'] || 8000;
@@ -23,6 +25,17 @@ app.use(cors({
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//Sessions
+app.use(session({
+    secret: process.env.MYTOKEN,
+    resave: false,
+    saveUninitialized: true,
+    store: mongoStore.create({ mongoUrl: process.env.LIVE_DATABASE_URI, collectionName: "sessions" }),
+    cookie: {
+        maxAge: Number(process.env.MAXAGE)
+    }
+}));
+
 // File Upload
 app.use(fileUpload({
     useTempFiles: true,
@@ -37,6 +50,14 @@ app.use(cookieParser());
 
 // Database connection
 connectDB();
+
+// View engine
+app.set('views', (__dirname + '/views'));
+app.set('view engine', 'ejs');
+
+// Routes
+app.use('/auth', require('./routes/authRoutes'));
+
 
 //App Listen
 app.listen(PORT, log(`Server run on PORT ${PORT}, Date: ${date}`));

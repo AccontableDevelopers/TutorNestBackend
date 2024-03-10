@@ -44,7 +44,7 @@ const TutorSchema = new mongoose.Schema({
 	},
 	avatar: {
 		type: String
-	}
+	},
 	areas_of_expertise: {
 		type: [String],
 		required: true
