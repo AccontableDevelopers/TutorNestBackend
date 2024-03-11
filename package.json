@@ -1,5 +1,5 @@
 {
-  "name": "tutornestbackend",
+  "name": "y",
   "version": "1.0.0",
   "description": "Web service for an edtech solution",
   "main": "index.js",
@@ -40,5 +40,6 @@
     "passport-google-oidc": "^0.1.0",
     "passport-twitter": "^1.0.4",
     "validator": "^13.11.0"
-  }
+  },
+  "devDependencies": {}
 }
