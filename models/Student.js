@@ -17,6 +17,14 @@ const StudentSchema = new mongoose.Schema({
 		type: String,
 		minlength: [6, 'Password length should be minimum of 6 characters']
 	},
+	isVerified: {
+		type: Boolean,
+		default: false,
+	  },
+	refreshToken:{
+		type:String,
+		default:null
+	  },
 	mobile: {
 		type: String,
 		validate: [isMobilePhone, 'Please enter a valid phone number']
@@ -42,7 +50,11 @@ const StudentSchema = new mongoose.Schema({
 	},
 	live_session: {
 		type: [Object]
-	}
+	},
+	verifyEmailToken: String,
+  	verifyEmailTokenExpire: Date,
+  	resetPasswordToken: String,
+  	resetPasswordExpire: Date
 
 });
 

@@ -57,7 +57,8 @@ app.set('view engine', 'ejs');
 
 // Routes
 app.use('/auth', require('./routes/authRoutes'));
-
+app.use('/user', require('./routes/userRoutes'))
+//LIVE_DATABASE_URI = mongodb+srv://AccountabilityGroup:bxHJ6NTIiSNX9Np0@cluster0.fhzuao4.mongodb.net/TutorNest?retryWrites=true&w=majority&appName=Cluster0
 
 //App Listen
 app.listen(PORT, log(`Server run on PORT ${PORT}, Date: ${date}`));
