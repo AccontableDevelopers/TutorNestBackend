@@ -38,17 +38,15 @@ class UserController {
       verifyEmailToken,
       verifyEmailTokenExpire: Date.now() + parseInt(process.env.token_expiry),
       });
-      
      await user.save()
        // Set body of email
-      const message = `Hi ${name}, Your verification code is: ${verifyEmailToken}`
-      console.log('here',user.email,message)
+      const message = `Hi ${name}, Your verification code is: ${verifyEmailToken}` 
+   
       const mailSent = await sendEmail({
           email: user.email,
           subject: 'Email verification',
           message
-        })
-        console.log('here',mailSent)
+        })  
         if(mailSent === false) throw new NotFoundError(`${email} cannot be verified. Please provide a valid email address`)
         res.status(200).json({
           status: 'Success',
