@@ -3,7 +3,8 @@ const {Router} = require('express');
 const router = Router();
 const passport = require('passport');
 require('../config/passport');
-
+const AuthController = require("../controllers/authControllers.js");
+const  tryCatchHandler  = require('../utils/tryCatch.handler.js')
 // Google sign up
 //router.get('/login/federated/google', passport.authenticate('google'));
 
@@ -36,5 +37,13 @@ router.get('/facebook/callback',
         failureRedirect: '/auth/login',
         successRedirect: '/auth/loggedin'
 }));
+
+
+
+
+
+// Setting up the User signup/login routes
+router.post("/student/signup", tryCatchHandler(AuthController.createUser));
+
 
 module.exports = router;
