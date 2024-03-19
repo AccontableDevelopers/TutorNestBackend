@@ -60,8 +60,15 @@ const TutorSchema = new mongoose.Schema({
 	},
 	live_session: {
 		type: [Object]
-	}
+	},
 
+	verifyEmailToken: String,
+  	verifyEmailTokenExpire: Date,
+  	resetPasswordToken: String,
+  	resetPasswordExpire: Date
+
+},{
+	timestamps: true
 });
 
 
