@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/AccontableDevelopers/TutorNestBackend#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cloudinary": "^2.0.1",
@@ -41,5 +42,5 @@
     "passport-twitter": "^1.0.4",
     "validator": "^13.11.0"
   },
-  "devDependencies": {}
+  "keywords": []
 }
