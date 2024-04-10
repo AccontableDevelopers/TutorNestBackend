@@ -44,7 +44,7 @@ const TutorSchema = new mongoose.Schema({
 	},
 	avatar: {
 		type: String
-	}
+	},
 	areas_of_expertise: {
 		type: [String],
 		required: true
@@ -60,8 +60,15 @@ const TutorSchema = new mongoose.Schema({
 	},
 	live_session: {
 		type: [Object]
-	}
+	},
 
+	verifyEmailToken: String,
+  	verifyEmailTokenExpire: Date,
+  	resetPasswordToken: String,
+  	resetPasswordExpire: Date
+
+},{
+	timestamps: true
 });
 
 

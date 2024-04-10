@@ -15,15 +15,34 @@ const StudentSchema = new mongoose.Schema({
 	},
 	password: {
 		type: String,
-		required: [true, 'Please enter a password'],
 		minlength: [6, 'Password length should be minimum of 6 characters']
 	},
+	isVerified: {
+		type: Boolean,
+		default: false,
+	  },
+	refreshToken:{
+		type:String,
+		default:null
+	  },
 	mobile: {
 		type: String,
-		required: true,
 		validate: [isMobilePhone, 'Please enter a valid phone number']
 	},
 	avatar: {
+		type: String
+	},
+	auth_type: {
+		type: String,
+		enum: {
+			values: ['Native', 'Social'],
+			message: 'Not an acceptable authentication method'
+		}
+	},
+	auth_client: {
+		type: String
+	},
+	social_id: {
 		type: String
 	},
 	courses: {
@@ -31,8 +50,14 @@ const StudentSchema = new mongoose.Schema({
 	},
 	live_session: {
 		type: [Object]
-	}
+	},
+	verifyEmailToken: String,
+  	verifyEmailTokenExpire: Date,
+  	resetPasswordToken: String,
+  	resetPasswordExpire: Date
 
+},{
+	timestamps: true
 });
 
 
