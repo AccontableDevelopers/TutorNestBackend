@@ -43,8 +43,12 @@ router.get('/facebook/callback',
 
 
 // Setting up the User signup/login routes
-router.post("/student/signup", tryCatchHandler(AuthController.createStudent));
-router.post("/tutor/signup", tryCatchHandler(AuthController.createTutor));
+router.post("/student/signup", tryCatchHandler(AuthController.UserController.createStudent));
+router.post("/tutor/signup", tryCatchHandler(AuthController.UserController.createTutor));
+
+// user changePassword routes
+router.patch("/student/changepassword", tryCatchHandler(AuthController.createNewStudentPassword));
+router.patch("/tutor/changepassword", tryCatchHandler(AuthController.createNewTutorPassword))
 
 
 module.exports = router;

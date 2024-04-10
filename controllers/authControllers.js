@@ -1,10 +1,15 @@
-
+const express = require("express")
+const bodyParser = require("body-parser")
 const { BadUserRequestError, NotFoundError } = require("../utils/errorHandlers.js")
 const StudentUser = require("../models/Student.js")
 const TutorUser = require("../models/Tutor.js")
 const bcrypt = require("bcrypt")
 require("dotenv").config()
 const sendEmail = require("../services/nodemailer.js")
+
+const app = express();
+
+app.use(bodyParser.json())
 
 
 
@@ -101,5 +106,73 @@ class UserController {
     }
     
 }
+
+//create new password for student
+const createNewStudentPassword = async (payload) => {
+  const { newStudentPassword } = payload;
+
+  try {
+      //find single student by id
+      const foundStudent = await StudentUser.findById({ _id: payload._id })
+
+      //if no student with id, return message to user
+      if (!foundStudent) return "No user with provided id";
+
+      //if found, check if passwords match, return information if it does
+      if(foundStudent.password === newStudentPassword) return "New password is the same as the old one."
+
+      //hash new student password
+      const hashedStudentPassword = await bcrypt.hash(newStudentPassword, 10);
+
+      //update the students password
+      foundStudent.password = hashedStudentPassword;
+
+      await foundStudent.save();
+
+      console.log("Student password changed successfull!.")
+      return "Password changed successfully!";
+
+  } catch (error) {
+      console.error(error);
+      throw error;
+  }
+}
     
-  module.exports = UserController
+
+//create new password for tutors
+const createNewTutorPassword = async (payload) => {
+  const { newTutorPassword } = payload;
+
+  try {
+      //find single tutor by id
+      const foundTutor = await TutorUser.findById({ _id: payload._id })
+
+      //if no tutor, return information
+      if (!foundTutor) return "No user with provided id";
+
+      //if found , check if passwords match, return information if it does
+      if (foundTutor.password === newTutorPassword) return "New password is the same as the old one."
+
+      //hash new tutor password
+      const hashedTutorPassword = await bcrypt.hash(newTutorPassword, 10);
+
+      //update the tutors password
+      foundTutor.password = hashedTutorPassword;
+
+      await foundTutor.save();
+
+      console.log("Tutor password changed successfull.")
+      return "Password changed successfully!";
+
+  } catch (error) {
+      console.error(error);
+      throw error;
+  }
+}
+
+
+module.exports = {
+  UserController,
+  createNewStudentPassword,
+  createNewTutorPassword
+}
