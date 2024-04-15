@@ -5,6 +5,7 @@ const TutorUser = require("../models/Tutor.js")
 const bcrypt = require("bcrypt")
 require("dotenv").config()
 const sendEmail = require("../services/nodemailer.js")
+const { accessToken, refreshToken } = require("../utils/helpers.js")
 
 
 
@@ -28,7 +29,7 @@ class UserController {
       // Generate verification token
       const saltRounds = parseInt(process.env.bycrypt_salt_round)
       // Create verification token
-      const verifyEmailToken = Math.floor(100000 + Math.random() * 900000).toString();
+      const verifyEmailToken = Math.floor(100000 + Math.random() * 900000).toString();                                                                                                                                                                                                                         Math.floor(100000 + Math.random() * 900000).toString();
       // Hash password
       const hashedPassword =  await bcrypt.hash(password, 10);
       const user = new StudentUser ({
@@ -99,7 +100,38 @@ class UserController {
           message
         })
     }
-    
+    static async verifyOtp (req,res) {
+      const {otpCode,email} = req.body
+      const user = await UserController.findOne({
+        email,
+        verifyEmailToken:otpCode,
+        verifyEmailTokenExpire:{$gt:Date.now()}
+      })
+      if(!user) return NotFoundError("otp not found, please otp")
+      user.isVerified = true;
+      verifyEmailToken = undefined;
+      verifyEmailTokenExpire = undefined
+      await user.save()
+      const userToken = accessToken(user)
+      const refresh = refreshToken(user)
+      user.refresh = refresh
+      await user.save()
+      const maxAge = parseInt(process.env.MAX_AGE)
+      res.cookie("refresh_token",refresh,{
+        httpOnly: true,
+        samesite: "none",
+        secure:false,
+        maxAge
+      })
+      res.status(201).json({
+        status:"sucess",
+        message:"account activation successful",
+        data:{
+          user,
+          access_token:userToken
+        }
+      })
+    }
 }
     
   module.exports = UserController
