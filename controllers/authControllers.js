@@ -1,5 +1,5 @@
 
-const { BadUserRequestError, NotFoundError } = require("../utils/errorHandlers.js")
+const { BadUserRequestError, NotFoundError, UnAuthorizedError, FailedRequestError } = require("../utils/errorHandlers.js")
 const StudentUser = require("../models/Student.js")
 const TutorUser = require("../models/Tutor.js")
 const bcrypt = require("bcrypt")
@@ -130,6 +130,63 @@ class UserController {
           user,
           access_token:userToken
         }
+      })
+    }
+
+    static async resetOtpCode (req,res){
+      const {email} = req.body
+      const user = await StudentUser.findOne({email})
+      if(!user) return NotFoundError(`user with ${email} not found`)
+      const verifyEmailToken = Math.floor(Math.random()*90000).toString()
+      const message = `your new verification code is ${verifyEmailToken}`
+      const mailSent = await sendEmail({
+        email,
+        subject:"new otp code",
+        message
+      })
+      user.verifyEmailTokenExpire = Date.now() + parseInt(process.env.token_expiry)
+      user.save()
+      if(mailSent === false) return FailedRequestError("failed to send mail message")
+      res.status(201).json({
+    message:"sucess",
+    data:`your otp code is: ${verifyEmailToken}`
+    })
+    }
+
+    static async resetPassword (req,res){
+      const {email} = req.body
+      const user = await StudentUser.findOne({email})
+      if(!user) return NotFoundError(`${email} not found`)
+      if(!user.isVerified) return UnAuthorizedError("user not verified, verify with otp")
+      const message = `<p>Please use this link to verify and complete your log in</p>
+                        <p>This link <b>expires in 30 minutes</b></p>
+                        <p>press <a href="${process.env.CLIENT_URL}">here</a></p> `
+      const mailSent = await sendEmail({
+        email,
+        subject:"Password Reset Link",
+        message
+      })
+      if(mailSent === false) return FailedRequestError("failed to send mail")
+      res.status(201).json({
+        "sucesss": true,
+        data:mailSent
+    })
+    }
+
+    static async createNewPaasword (req,res){
+      const {email,oldPassword,newPassword} = req.body
+      const user = await StudentUser.findOne({email})
+      if(!user) return NotFoundError(`${email} not found`)
+      if(!user.isVerified) return UnAuthorizedError("Please complete log in by verifying")
+      const isMatch = await bcrypt.compare(oldPassword,user.password)
+      if(!isMatch) return UnAuthorizedError("Incorrect password")
+      const hashNewPassword = await bcrypt.hash(newPassword, 10)
+      user.password = hashNewPassword
+      user.save()
+      const {password,...others} = user._doc
+      res.status(200).json({
+        sucess:"true",
+        data:others
       })
     }
 }
