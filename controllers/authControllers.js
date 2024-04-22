@@ -173,7 +173,7 @@ class UserController {
     })
     }
 
-    static async createNewPaasword (req,res){
+    static async createNewPassword (req,res){
       const {email,oldPassword,newPassword} = req.body
       const user = await StudentUser.findOne({email})
       if(!user) return NotFoundError(`${email} not found`)

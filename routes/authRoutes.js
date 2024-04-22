@@ -46,6 +46,9 @@ router.get('/facebook/callback',
 router.post("/student/signup", tryCatchHandler(AuthController.createStudent));
 router.post("/tutor/signup", tryCatchHandler(AuthController.createTutor));
 router.get("/student/verifyOtp",tryCatchHandler(AuthController.verifyOtp))
+router.post("/student/resetOtp",tryCatchHandler(AuthController.resetOtpCode))
+router.post("student/resetPassword",tryCatchHandler(AuthController.resetPassword))
+router.post("student/newPassword",tryCatchHandler(AuthController.createNewPassword))
 
 
 module.exports = router;
