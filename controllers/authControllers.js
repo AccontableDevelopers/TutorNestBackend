@@ -100,6 +100,22 @@ class UserController {
           message
         })
     }
+
+    static async login (req,res){
+      const {email,password} = req.body
+      const user = await UserController.findOne({email})
+      if(!user) return NotFoundError("Email not found")
+      if(user.isVerified === false) return UnAuthorizedError("You have not been verified")
+      const isMatch = await bcrypt.compare(password,user.password)
+      if(!isMatch) return UnAuthorizedError("Incorrect password")
+      const token = user.accessToken()
+      const refreshToken = user.refreshToken()
+      user.refreshToken =  refreshToken
+      res.cookie("refreshToken",refreshToken,{httpOnly: true})
+      res.status(201).json({accessToken:token})
+    }
+
+
     static async verifyOtp (req,res) {
       const {otpCode,email} = req.body
       const user = await UserController.findOne({
