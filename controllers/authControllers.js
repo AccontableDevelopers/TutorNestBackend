@@ -103,13 +103,14 @@ class UserController {
 
     static async login (req,res){
       const {email,password} = req.body
-      const user = await UserController.findOne({email})
-      if(!user) return NotFoundError("Email not found")
-      if(user.isVerified === false) return UnAuthorizedError("You have not been verified")
+      console.log("here")
+      const user = await StudentUser.findOne({email})
+      if(!user) throw new NotFoundError("Email not found")
+      if(user.isVerified === false) throw new UnAuthorizedError("You have not been verified")
       const isMatch = await bcrypt.compare(password,user.password)
-      if(!isMatch) return UnAuthorizedError("Incorrect password")
-      const token = user.accessToken()
-      const refreshToken = user.refreshToken()
+      if(!isMatch) throw new UnAuthorizedError("Incorrect password")
+      const token = accessToken(user)
+      const refreshToken = refreshToken(user)
       user.refreshToken =  refreshToken
       res.cookie("refreshToken",refreshToken,{httpOnly: true})
       res.status(201).json({accessToken:token})
@@ -118,35 +119,17 @@ class UserController {
 
     static async verifyOtp (req,res) {
       const {otpCode,email} = req.body
-      const user = await UserController.findOne({
-        email,
-        verifyEmailToken:otpCode,
-        verifyEmailTokenExpire:{$gt:Date.now()}
-      })
-      if(!user) return NotFoundError("otp not found, please otp")
-      user.isVerified = true;
-      verifyEmailToken = undefined;
-      verifyEmailTokenExpire = undefined
-      await user.save()
-      const userToken = accessToken(user)
-      const refresh = refreshToken(user)
-      user.refresh = refresh
-      await user.save()
-      const maxAge = parseInt(process.env.MAX_AGE)
-      res.cookie("refresh_token",refresh,{
-        httpOnly: true,
-        samesite: "none",
-        secure:false,
-        maxAge
-      })
-      res.status(201).json({
-        status:"sucess",
-        message:"account activation successful",
-        data:{
-          user,
-          access_token:userToken
-        }
-      })
+      const user = await StudentUser.findOne({email})
+      if(!user) throw new NotFoundError("otp not found, please otp")
+      if(user.verifyEmailToken == otpCode.toString() && user.verifyEmailTokenExpire > new Date(Date.now())){
+        user.isVerified = true;
+        user.verifyEmailToken = undefined;
+        user.verifyEmailTokenExpire = undefined
+        await user.save()
+      }else{
+        throw new UnAuthorizedError("Otp code has expired")
+      }
+      res.status(200).json("Email has been verified")
     }
 
     static async resetOtpCode (req,res){
@@ -160,6 +143,7 @@ class UserController {
         subject:"new otp code",
         message
       })
+      user.verifyEmailToken = verifyEmailToken;
       user.verifyEmailTokenExpire = Date.now() + parseInt(process.env.token_expiry)
       user.save()
       if(mailSent === false) return FailedRequestError("failed to send mail message")

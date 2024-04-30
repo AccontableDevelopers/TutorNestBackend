@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
-export function accessToken (user){
+function accessToken (user){
     const payload = {
         _id : user._id
     }
@@ -9,7 +9,7 @@ export function accessToken (user){
     return token
 }
 
-export function refreshToken (user){
+function refreshToken (user){
     const payload = {
         _id: user._id
     }
@@ -17,6 +17,12 @@ export function refreshToken (user){
     return token
 }
 
-export function verifyToken (token){
+function verifyToken (token){
     return jwt.verify(token,process.env.ACCESS_SECRET)
+}
+
+module.exports = {
+    accessToken,
+    refreshToken,
+    verifyToken
 }
