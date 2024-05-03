@@ -110,9 +110,9 @@ class UserController {
       const isMatch = await bcrypt.compare(password,user.password)
       if(!isMatch) throw new UnAuthorizedError("Incorrect password")
       const token = accessToken(user)
-      const refreshToken = refreshToken(user)
+      const refreshTok = refreshToken(user)
       user.refreshToken =  refreshToken
-      res.cookie("refreshToken",refreshToken,{httpOnly: true})
+      res.cookie("refreshToken",refreshTok,{httpOnly: true})
       res.status(201).json({accessToken:token})
     }
 
@@ -155,6 +155,7 @@ class UserController {
 
     static async resetPassword (req,res){
       const {email} = req.body
+      console.log("here")
       const user = await StudentUser.findOne({email})
       if(!user) return NotFoundError(`${email} not found`)
       if(!user.isVerified) return UnAuthorizedError("user not verified, verify with otp")

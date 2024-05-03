@@ -1,6 +1,7 @@
 const log = console.log;
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require("morgan")
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const ejs = require('ejs');
@@ -32,7 +33,7 @@ app.use(session({
     saveUninitialized: true,
     store: mongoStore.create({ mongoUrl: process.env.LIVE_DATABASE_URI, collectionName: "sessions" }),
     cookie: {
-        maxAge: Number(process.env.MAXAGE)
+        maxAge: Number(process.env.MAX_AGE)
     }
 }));
 
@@ -46,8 +47,7 @@ app.use(fileUpload({
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-
-
+app.use(morgan("tiny"))
 // Database connection
 connectDB();
 
@@ -56,6 +56,7 @@ app.set('views', (__dirname + '/views'));
 app.set('view engine', 'ejs');
 
 // Routes
+
 app.use('/auth', require('./routes/authRoutes'));
 
 //LIVE_DATABASE_URI = mongodb+srv://AccountabilityGroup:bxHJ6NTIiSNX9Np0@cluster0.fhzuao4.mongodb.net/TutorNest?retryWrites=true&w=majority&appName=Cluster0
