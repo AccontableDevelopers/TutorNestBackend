@@ -48,8 +48,8 @@ router.post("/tutor/signup", tryCatchHandler(AuthController.createTutor));
 router.get("/student/verifyOtp",tryCatchHandler(AuthController.verifyOtp))
 router.post("/student/resetOtp",tryCatchHandler(AuthController.resetOtpCode))
 router.post("/student/login",tryCatchHandler(AuthController.login))
-router.post("student/resetPassword",tryCatchHandler(AuthController.resetPassword))
-router.post("student/newPassword",tryCatchHandler(AuthController.createNewPassword))
+router.get("/student/resetPassword",tryCatchHandler(AuthController.resetPassword))
+router.post("/student/newPassword",tryCatchHandler(AuthController.createNewPassword))
 
 
 module.exports = router;

@@ -17,7 +17,9 @@ const PORT = process.env['PORT'] || 8000;
 require('dotenv').config();
 
 const app = express();
-
+const server = require("http").Server(app)
+const {v4:uuidv4} = require("uuid")
+const io = require("socket.io")(server)
 // CORS Config
 app.use(cors({
     origin: "*"
@@ -52,11 +54,17 @@ app.use(morgan("tiny"))
 connectDB();
 
 // View engine
-app.set('views', (__dirname + '/views'));
+//app.set('views', (__dirname + '/views'));
 app.set('view engine', 'ejs');
-
+app.use(express.static("public"))
 // Routes
+app.get("/",(req,res)=>{
+    res.redirect(`/${uuidv4()}`)
+})
 
+app.get("/:room",(req,res) => {
+    res.render("room",{roomId:req.params.room})
+})
 app.use('/auth', require('./routes/authRoutes'));
 
 //LIVE_DATABASE_URI = mongodb+srv://AccountabilityGroup:bxHJ6NTIiSNX9Np0@cluster0.fhzuao4.mongodb.net/TutorNest?retryWrites=true&w=majority&appName=Cluster0
