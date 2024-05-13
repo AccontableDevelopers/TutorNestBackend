@@ -4,12 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TutorNest</title>
-    <script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+    <script src="https://unpkg.com/peerjs@1.5.3/dist/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+   <script src="/socket.io/socket.io.js"></script>
+   <script>
         const ROOM_ID = "<%= roomId %>"
         alert(ROOM_ID)
     </script>
 </head>
 <body>
-    
+    <div class="main">
+        <div class="main_left">
+            <!---video area----->
+            <div class="main_video">
+                <div id="video-grid"></div>
+            </div>
+            <div class="main__controls">
+                <div class="main__control_block">
+                    <div 
+                    class="main__controls_button"
+                    id="muteButton"
+                    onclick=muteUnmute()
+                    >
+                <i class="fa fa-microphone"><span>mute</span></i>
+                </div>
+                <div class="main__control_block">
+                    <div 
+                    class="main__controls_button"
+                    id="playPauseVideo"
+                    onclick=playStop()
+                    >
+                <i class="fa fa-video-camera"><span>pause video</span></i>
+                </div>
+                </div>
+            </div>
+
+
+            <div class="main__control_block">
+                <div 
+                class="main__controls_button"
+                id="chat_Btn"
+                onclick=showChat(this)
+                >
+            <i class="fa fa-comment"><span>comment</span></i>
+            </div>
+            <div 
+                class="main__controls_button"
+                id="playPauseVideo"
+                onclick=showInvitePopup()
+                >
+            <i class="fa fa-user-plus"><span>invite people</span></i>
+            </div>
+
+
+        </div>
+        <div class="main_right">
+            <!---chat area-->
+            <div class="main_header">
+                <h6><span class="live"></span>LIVE CHAT</h6>
+            </div>
+            <div class="main_chat_window" id="main_chat_window">
+                <ul class="messages" id="all_messages"></ul>
+            </div>
+            <div class="main_message_container">
+                <input 
+                type="text" 
+                id="chat_message" 
+                placeholder="send message & press enter to send"/>
+                <button class="sendMsg" id="sendMsg">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
